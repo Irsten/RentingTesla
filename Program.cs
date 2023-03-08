@@ -1,3 +1,4 @@
+using RentingTesla;
 using RentingTesla.Entities;
 using RentingTesla.Services;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<RentingTeslaDbContext>();
+builder.Services.AddScoped<RentingTeslaSeeder>();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ILocationService, LocationService>();
@@ -21,6 +23,11 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+var scope = app.Services.CreateScope();
+var seeder = scope.ServiceProvider.GetRequiredService<RentingTeslaSeeder>();
+
+seeder.Seed();
 
 app.UseHttpsRedirection();
 app.UseSwagger();
