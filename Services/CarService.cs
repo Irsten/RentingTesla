@@ -1,0 +1,33 @@
+﻿using RentingTesla.Entities;
+
+namespace RentingTesla.Services
+{
+    public interface ICarService
+    {
+        List<Car> GetAll();
+        Car GetCar(int carId);
+    }
+
+    public class CarService : ICarService
+    {
+        private readonly RentingTeslaDbContext _dbContext;
+        public CarService(RentingTeslaDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+        public List<Car> GetAll()
+        {
+            var cars = _dbContext.Cars.ToList();
+
+            return cars;
+        }
+
+        public Car GetCar(int carId)
+        {
+            var car = _dbContext.Cars.FirstOrDefault(c => c.Id == carId);
+            if (car == null) { return null; }
+
+            return car;
+        }
+    }
+}

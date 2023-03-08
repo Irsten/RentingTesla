@@ -1,4 +1,5 @@
 using RentingTesla.Entities;
+using RentingTesla.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<RentingTeslaDbContext>();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
 
 var app = builder.Build();
 
