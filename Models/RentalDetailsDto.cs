@@ -12,7 +12,6 @@ namespace RentingTesla.Models
         public DateTime PickupDate { get; set; }
         public string ReturnLocation { get; set; }
         public DateTime ReturnDate { get; set; }
-        public int RentalCost { get; set; }
         public int CarId { get; set; }
     }
 }

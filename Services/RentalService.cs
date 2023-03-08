@@ -19,6 +19,9 @@ namespace RentingTesla.Services
 
         public bool MakeReservation(RentalDetailsDto dto)
         {
+            var rentalPeriod = dto.ReturnDate.Day - dto.PickupDate.Day;
+            var rentalCost = CalculateRentalCost(dto.CarId, rentalPeriod);
+
             _dbContext.RentalsDetails.Add(new RentalDetails
             {
                 BorrowerFirstName = dto.BorrowerFirstName,
@@ -29,12 +32,21 @@ namespace RentingTesla.Services
                 PickupDate = dto.PickupDate,
                 ReturnLocation = dto.ReturnLocation,
                 ReturnDate = dto.ReturnDate,
-                RentalCost = dto.RentalCost,
+                RentalCost = rentalCost,
                 CarId = dto.CarId,
             });
             _dbContext.SaveChanges();
 
             return true;
+        }
+
+        private int CalculateRentalCost(int carId, int rentalPeriod)
+        {
+            var car = _dbContext.Cars.FirstOrDefault(c => c.Id == carId);
+            var pricePerDay = car.PricePerDay;
+            var rentalCost = pricePerDay * rentalPeriod;
+
+            return rentalCost;
         }
     }
 }

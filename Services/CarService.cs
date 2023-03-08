@@ -5,7 +5,7 @@ namespace RentingTesla.Services
     public interface ICarService
     {
         List<Car> GetAll();
-        Car GetCar(int carId);
+        Car GetCarById(int carId);
     }
 
     public class CarService : ICarService
@@ -22,7 +22,7 @@ namespace RentingTesla.Services
             return cars;
         }
 
-        public Car GetCar(int carId)
+        public Car GetCarById(int carId)
         {
             var car = _dbContext.Cars.FirstOrDefault(c => c.Id == carId);
             if (car == null) { return null; }

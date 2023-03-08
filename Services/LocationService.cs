@@ -5,7 +5,7 @@ namespace RentingTesla.Services
     public interface ILocationService
     {
         List<Location> GetAll();
-        Location GetById(int locationId);
+        Location GetLocationById(int locationId);
     }
 
     public class LocationService : ILocationService
@@ -19,10 +19,12 @@ namespace RentingTesla.Services
         public List<Location> GetAll()
         {
             var locations = _dbContext.Locations.ToList();
+            if (!locations.Any()) { return null; }
+
             return locations;
         }
 
-        public Location GetById(int locationId)
+        public Location GetLocationById(int locationId)
         {
             var location = _dbContext.Locations.FirstOrDefault(l => l.Id == locationId);
             if (location == null) { return null; }

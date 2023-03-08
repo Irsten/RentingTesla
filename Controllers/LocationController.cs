@@ -18,12 +18,16 @@ namespace RentingTesla.Controllers
         public ActionResult GetAll()
         {
             var locations = _locationService.GetAll();
+            if (!locations.Any()) { return BadRequest("There are no locations."); }
+
             return Ok(locations);
         }
         [HttpGet("{locationId}")]
         public ActionResult GetLocationById([FromRoute] int locationId)
         {
-            var location = _locationService.GetById(locationId);
+            var location = _locationService.GetLocationById(locationId);
+            if (location == null) { return BadRequest("Selected location does not exist."); }
+
             return Ok(location);
         }
     }
