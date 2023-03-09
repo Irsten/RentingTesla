@@ -1,0 +1,26 @@
+.title-image {
+  position: relative;
+  /* height: auto; */
+  /* width: 100%; */
+  margin-left: calc(-50vw + 50%);
+}
+
+.title-container h1 {
+  position: absolute;
+  color: #ffffff;
+  top: 8rem;
+}
+
+.form-container {
+  /* background-color: aqua; */
+}
+
+.form {
+  /* background-color: blue; */
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+  width: 100%;
+}

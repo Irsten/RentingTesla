@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import TeslaHomePage from '../images/tesla-home-page.jpg';
+import Cars from './Cars';
+
+import './components.css';
 
 export class Home extends Component {
   static displayName = Home.name;
@@ -6,20 +10,110 @@ export class Home extends Component {
   render() {
     return (
       <div>
-        <h1>Hello, world!</h1>
-        <p>Welcome to your new single-page application, built with:</p>
-        <ul>
-          <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-          <li><a href='https://facebook.github.io/react/'>React</a> for client-side code</li>
-          <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-        </ul>
-        <p>To help you get started, we have also set up:</p>
-        <ul>
-          <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-          <li><strong>Development server integration</strong>. In development mode, the development server from <code>create-react-app</code> runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-          <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration produces minified, efficiently bundled JavaScript files.</li>
-        </ul>
-        <p>The <code>ClientApp</code> subdirectory is a standard React application based on the <code>create-react-app</code> template. If you open a command prompt in that directory, you can run <code>npm</code> commands such as <code>npm test</code> or <code>npm install</code>.</p>
+        <div className='container mb-3'>
+          <div className='title-image'>
+            <img src={TeslaHomePage} alt='Tesla' style={{ width: '120%' }} />
+          </div>
+          <div className='container title-container'>
+            <h1 style={{ width: '30%' }}>RENT A TESLA IN MALLORCA</h1>
+          </div>
+        </div>
+        <div className='container form-container'>
+          <form className='form'>
+            <div className='row'>
+              <h3>Reservation data</h3>
+              <div className='col'>
+                <div className='form-floating mb-2'>
+                  <select
+                    className='form-select'
+                    aria-label='Default select example'
+                  >
+                    <option selected>Open this select menu</option>
+                    <option value='1'>Palma Airport</option>
+                    <option value='2'>Palma City Center</option>
+                    <option value='3'>Alcudia</option>
+                    <option value='3'>Manacor</option>
+                  </select>
+                  <label>Pickup location</label>
+                </div>
+                <div className='form-floating mb-2'>
+                  <input className='form-control' type='date'></input>
+                  <label>Pickup date</label>
+                </div>
+                <div className='form-floating mb-2'>
+                  <input className='form-control' type='time'></input>
+                  <label>Pickup time</label>
+                </div>
+              </div>
+              <div className='col'>
+                <div className='form-floating mb-2'>
+                  <select
+                    className='form-select'
+                    aria-label='Default select example'
+                  >
+                    <option selected>Open this select menu</option>
+                    <option value='1'>Palma Airport</option>
+                    <option value='2'>Palma City Center</option>
+                    <option value='3'>Alcudia</option>
+                    <option value='3'>Manacor</option>
+                  </select>
+                  <label>Return location</label>
+                </div>
+                <div className='form-floating mb-2'>
+                  <input className='form-control' type='date'></input>
+                  <label>Return date</label>
+                </div>
+                <div className='form-floating mb-2'>
+                  <input className='form-control' type='time'></input>
+                  <label>Return time</label>
+                </div>
+              </div>
+              <Cars />
+              <h3>Personal data</h3>
+              <div className='row'>
+                <div className='col'>
+                  <div className='form-floating mb-2'>
+                    <input
+                      className='form-control'
+                      type='text'
+                      placeholder='First name'
+                    ></input>
+                    <label>First name</label>
+                  </div>
+                  <div className='form-floating mb-2'>
+                    <input
+                      className='form-control'
+                      type='text'
+                      placeholder='First name'
+                    ></input>
+                    <label>Email</label>
+                  </div>
+                </div>
+                <div className='col'>
+                  <div className='form-floating mb-2'>
+                    <input
+                      className='form-control'
+                      type='text'
+                      placeholder='Last name'
+                    ></input>
+                    <label>Last name</label>
+                  </div>
+                  <div className='form-floating mb-2'>
+                    <input
+                      className='form-control'
+                      type='text'
+                      placeholder='First name'
+                    ></input>
+                    <label>Phone number</label>
+                  </div>
+                </div>
+              </div>
+              <button className='btn btn-primary form-control mb-2'>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
