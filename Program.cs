@@ -10,12 +10,21 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<RentingTeslaDbContext>();
 builder.Services.AddScoped<RentingTeslaSeeder>();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options => options.AddPolicy("RentingTeslaApi",
+    policy => policy
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithExposedHeaders("Content-Disposition")
+    ));
 
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 
 var app = builder.Build();
+
+app.UseCors("RentingTeslaApi");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

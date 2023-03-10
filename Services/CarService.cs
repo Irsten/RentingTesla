@@ -4,7 +4,7 @@ namespace RentingTesla.Services
 {
     public interface ICarService
     {
-        List<Car> GetAll();
+        List<Car> GetAll(int locationId);
         Car GetCarById(int carId);
     }
 
@@ -15,9 +15,9 @@ namespace RentingTesla.Services
         {
             _dbContext = dbContext;
         }
-        public List<Car> GetAll()
+        public List<Car> GetAll(int locationId)
         {
-            var cars = _dbContext.Cars.ToList();
+            var cars = _dbContext.Cars.Where(c => c.LocationId == locationId).ToList();
 
             return cars;
         }

@@ -21,7 +21,7 @@ namespace RentingTesla.Controllers
         {
             var locations = _dbContext.Locations.Where(l => l.Id == locationId);
             if (!locations.Any()) { return BadRequest("The selected location does not exists."); }
-            var cars = _carService.GetAll();
+            var cars = _carService.GetAll(locationId);
 
             return Ok(cars);
         }
