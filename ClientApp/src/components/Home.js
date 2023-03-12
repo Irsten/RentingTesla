@@ -7,43 +7,46 @@ import './components.css';
 const url = 'https://localhost:7024/api/';
 
 export default function Home() {
-  const [pickupLocation, setPickupLocation] = useState('');
+  // DATA
+  const [pickupLocationId, setPickupLocationId] = useState('');
   const [pickupDate, setPickupDate] = useState(new Date());
-  const [returnLocation, setReturnLocation] = useState('');
+  const [returnLocationId, setReturnLocationId] = useState('');
   const [returnDate, setReturnDate] = useState(new Date());
-  const [selectedCar, setSelectedCar] = useState(0);
+  const [carId, setCarId] = useState(0);
   const [borrowerFirstName, setBorrowerFirstName] = useState('');
   const [borrowerLastName, setBorrowerLastName] = useState('');
   const [borrowerEmail, setBorrowerEmail] = useState('');
   const [borrowerPhoneNumber, setBorrowerPhoneNumber] = useState('');
 
+  // ADDITIONAL DATA
   const [locations, setLocations] = useState([]);
   const [carsInLocation, setCarsInLocation] = useState([]);
 
   useEffect(() => {
-    try {
-      axios.get(url + 'locations/get-all').then((response) => {
+    // GET LOCATIONS FROM DATABASE
+    axios
+      .get(url + 'locations/get-all')
+      .then((response) => {
         setLocations(response.data);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .catch((err) => console.log(err));
   }, []);
 
+  // SEND REQUEST TO MAKE A RESERVATION
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     await axios
       .post(url + 'reservations/make-reservation', {
-        borrowerFirstName: borrowerFirstName,
-        borrowerLastName: borrowerLastName,
-        borrowerEmail: borrowerEmail,
-        borrowerPhoneNumber: borrowerPhoneNumber,
-        pickupLocationId: pickupLocation,
-        pickupDate: pickupDate,
-        returnLocationId: returnLocation,
-        returnDate: returnDate,
-        carId: selectedCar,
+        borrowerFirstName,
+        borrowerLastName,
+        borrowerEmail,
+        borrowerPhoneNumber,
+        pickupLocationId,
+        pickupDate,
+        returnLocationId,
+        returnDate,
+        carId,
       })
       .then((response) => {
         console.log(response);
@@ -51,11 +54,12 @@ export default function Home() {
       .catch((err) => console.log(err));
   };
 
+  // get cars available in specific location from database and set pickupLocationId
   const handlePickupLocationChange = async (value) => {
     if (value === '0') {
       setCarsInLocation([]);
     } else {
-      setPickupLocation(value);
+      setPickupLocationId(value);
       await axios
         .get(url + 'locations/' + value + '/cars/get-all')
         .then((response) => {
@@ -65,29 +69,30 @@ export default function Home() {
     }
   };
 
+  // set data value based on input id
   const handleFormChange = (e) => {
     const id = e.target.id;
     const value = e.target.value;
     switch (id) {
-      case 'pickupLocation':
+      case 'pickupLocationId':
         handlePickupLocationChange(value);
         break;
       case 'pickupDate':
         setPickupDate(value);
         break;
-      case 'returnLocation':
+      case 'returnLocationId':
         if (value !== 0) {
-          setReturnLocation(value);
+          setReturnLocationId(value);
         }
         break;
       case 'returnDate':
         setReturnDate(value);
         break;
-      case 'car':
+      case 'carId':
         if (value === '0') {
-          setSelectedCar('');
+          setCarId('');
         } else {
-          setSelectedCar(value);
+          setCarId(value);
         }
         break;
       case 'firstName':
@@ -120,12 +125,13 @@ export default function Home() {
       <div className='container form-container'>
         <form className='form' onSubmit={handleSubmit}>
           <div className='container'>
+            {/* RESERVATION DATA */}
             <div className='reservation-data row'>
               <h3>Reservation data</h3>
               <div className='col'>
                 <div className='form-floating mb-2'>
                   <select
-                    id='pickupLocation'
+                    id='pickupLocationId'
                     className='form-select'
                     onChange={(e) => handleFormChange(e)}
                   >
@@ -151,7 +157,7 @@ export default function Home() {
               <div className='col mb-3'>
                 <div className='form-floating mb-2'>
                   <select
-                    id='returnLocation'
+                    id='returnLocationId'
                     className='form-select'
                     onChange={(e) => handleFormChange(e)}
                   >
@@ -175,14 +181,12 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
             {/* CARS */}
-
             <div className='cars mb-3'>
               <h3>Cars</h3>
               <div className='form-floating mb-2'>
                 <select
-                  id='car'
+                  id='carId'
                   className='form-select'
                   onChange={(e) => handleFormChange(e)}
                 >
@@ -197,7 +201,7 @@ export default function Home() {
                 <label>Available Cars</label>
               </div>
             </div>
-
+            {/* PERSONAL DATA */}
             <div className='personal-data mb-3'>
               <h3>Personal data</h3>
               <div className='row'>
