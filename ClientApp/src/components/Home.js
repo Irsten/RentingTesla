@@ -4,28 +4,27 @@ import axios from 'axios';
 
 import './components.css';
 
+const url = 'https://localhost:7024/api/';
+
 export default function Home() {
   const [pickupLocation, setPickupLocation] = useState('');
-  const [pickupDate, setPickupDate] = useState('');
+  const [pickupDate, setPickupDate] = useState(new Date());
   const [returnLocation, setReturnLocation] = useState('');
-  const [returnDate, setReturnDate] = useState('');
+  const [returnDate, setReturnDate] = useState(new Date());
+  const [selectedCar, setSelectedCar] = useState(0);
   const [borrowerFirstName, setBorrowerFirstName] = useState('');
   const [borrowerLastName, setBorrowerLastName] = useState('');
   const [borrowerEmail, setBorrowerEmail] = useState('');
   const [borrowerPhoneNumber, setBorrowerPhoneNumber] = useState('');
-  const [rentalCost, setRentalCost] = useState('');
 
   const [locations, setLocations] = useState([]);
   const [carsInLocation, setCarsInLocation] = useState([]);
 
   useEffect(() => {
     try {
-      axios
-        .get('https://localhost:7024/api/location/get-all')
-        .then((response) => {
-          setLocations(response.data);
-          console.log(response.data);
-        });
+      axios.get(url + 'locations/get-all').then((response) => {
+        setLocations(response.data);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -33,25 +32,80 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    await axios
+      .post(url + 'reservations/make-reservation', {
+        borrowerFirstName: borrowerFirstName,
+        borrowerLastName: borrowerLastName,
+        borrowerEmail: borrowerEmail,
+        borrowerPhoneNumber: borrowerPhoneNumber,
+        pickupLocationId: pickupLocation,
+        pickupDate: pickupDate,
+        returnLocationId: returnLocation,
+        returnDate: returnDate,
+        carId: selectedCar,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
   };
 
-  const handlePickupLocationChange = async (e) => {
-    if (e.target.value !== '0') {
-      setPickupLocation(e.target.value);
-      try {
-        await axios
-          .get('https://localhost:7024/api/' + e.target.value + '/car/get-all')
-          .then((response) => {
-            setCarsInLocation(response.data);
-          });
-      } catch (error) {
-        console.log(error);
-      }
+  const handlePickupLocationChange = async (value) => {
+    if (value === '0') {
+      setCarsInLocation([]);
+    } else {
+      setPickupLocation(value);
+      await axios
+        .get(url + 'locations/' + value + '/cars/get-all')
+        .then((response) => {
+          setCarsInLocation(response.data);
+        })
+        .catch((err) => console.log(err));
     }
   };
-  const handleCarSelection = (car) => {};
 
-  const calculateRentalCost = () => {};
+  const handleFormChange = (e) => {
+    const id = e.target.id;
+    const value = e.target.value;
+    switch (id) {
+      case 'pickupLocation':
+        handlePickupLocationChange(value);
+        break;
+      case 'pickupDate':
+        setPickupDate(value);
+        break;
+      case 'returnLocation':
+        if (value !== 0) {
+          setReturnLocation(value);
+        }
+        break;
+      case 'returnDate':
+        setReturnDate(value);
+        break;
+      case 'car':
+        if (value === '0') {
+          setSelectedCar('');
+        } else {
+          setSelectedCar(value);
+        }
+        break;
+      case 'firstName':
+        setBorrowerFirstName(value);
+        break;
+      case 'lastName':
+        setBorrowerLastName(value);
+        break;
+      case 'email':
+        setBorrowerEmail(value);
+        break;
+      case 'phoneNumber':
+        setBorrowerPhoneNumber(value);
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div>
@@ -71,11 +125,11 @@ export default function Home() {
               <div className='col'>
                 <div className='form-floating mb-2'>
                   <select
+                    id='pickupLocation'
                     className='form-select'
-                    aria-label='Default select example'
-                    onChange={(e) => handlePickupLocationChange(e)}
+                    onChange={(e) => handleFormChange(e)}
                   >
-                    <option defaultValue='0'>Select pickup location</option>
+                    <option value='0'>Select pickup location</option>
                     {locations.map((location) => (
                       <option key={location.id} value={location.id}>
                         {location.locationName}
@@ -85,14 +139,23 @@ export default function Home() {
                   <label>Pickup location</label>
                 </div>
                 <div className='form-floating'>
-                  <input className='form-control' type='datetime-local'></input>
+                  <input
+                    id='pickupDate'
+                    className='form-control'
+                    type='datetime-local'
+                    onChange={(e) => handleFormChange(e)}
+                  ></input>
                   <label>Pickup date</label>
                 </div>
               </div>
               <div className='col mb-3'>
                 <div className='form-floating mb-2'>
-                  <select className='form-select'>
-                    <option defaultValue='0'>Select return location</option>
+                  <select
+                    id='returnLocation'
+                    className='form-select'
+                    onChange={(e) => handleFormChange(e)}
+                  >
+                    <option value='0'>Select return location</option>
                     {locations.map((location) => (
                       <option key={location.id} value={location.id}>
                         {location.locationName}
@@ -102,7 +165,12 @@ export default function Home() {
                   <label>Return location</label>
                 </div>
                 <div className='form-floating'>
-                  <input className='form-control' type='datetime-local'></input>
+                  <input
+                    id='returnDate'
+                    className='form-control'
+                    type='datetime-local'
+                    onChange={(e) => handleFormChange(e)}
+                  ></input>
                   <label>Return date</label>
                 </div>
               </div>
@@ -113,10 +181,12 @@ export default function Home() {
             <div className='cars mb-3'>
               <h3>Cars</h3>
               <div className='form-floating mb-2'>
-                <select className='form-select'>
-                  <option value='0' selected disabled>
-                    Select car
-                  </option>
+                <select
+                  id='car'
+                  className='form-select'
+                  onChange={(e) => handleFormChange(e)}
+                >
+                  <option value='0'>Select car</option>
                   {carsInLocation.map((car) => (
                     <option key={car.id} value={car.id}>
                       {car.model} | Seats: {car.seats} | Range: {car.range} km |
@@ -124,7 +194,6 @@ export default function Home() {
                     </option>
                   ))}
                 </select>
-
                 <label>Available Cars</label>
               </div>
             </div>
@@ -135,9 +204,11 @@ export default function Home() {
                 <div className='col'>
                   <div className='form-floating mb-2'>
                     <input
+                      id='firstName'
                       className='form-control'
                       type='text'
                       placeholder='First name'
+                      onChange={(e) => handleFormChange(e)}
                     ></input>
                     <label>First name</label>
                   </div>
@@ -145,9 +216,11 @@ export default function Home() {
                 <div className='col'>
                   <div className='form-floating mb-2'>
                     <input
+                      id='lastName'
                       className='form-control'
                       type='text'
                       placeholder='Last name'
+                      onChange={(e) => handleFormChange(e)}
                     ></input>
                     <label>Last name</label>
                   </div>
@@ -157,9 +230,11 @@ export default function Home() {
                 <div className='col'>
                   <div className='form-floating mb-2'>
                     <input
+                      id='email'
                       className='form-control'
                       type='text'
-                      placeholder='First name'
+                      placeholder='Email'
+                      onChange={(e) => handleFormChange(e)}
                     ></input>
                     <label>Email</label>
                   </div>
@@ -167,19 +242,18 @@ export default function Home() {
                 <div className='col'>
                   <div className='form-floating mb-2'>
                     <input
+                      id='phoneNumber'
                       className='form-control'
                       type='text'
-                      placeholder='First name'
+                      placeholder='Phone number'
+                      onChange={(e) => handleFormChange(e)}
                     ></input>
                     <label>Phone number</label>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='total-cost mb-3'>
-              <h3>Total cost: {rentalCost}</h3>
-            </div>
-            <button className='btn btn-primary form-control mb-5'>
+            <button className='btn btn-primary form-control mb-5' type='submit'>
               Submit
             </button>
           </div>
