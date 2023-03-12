@@ -17,9 +17,16 @@ namespace RentingTesla.Services
         }
         public List<Car> GetAll(int locationId)
         {
-            var cars = _dbContext.Cars.Where(c => c.LocationId == locationId).ToList();
+            var allCars = _dbContext.Cars.Where(c => c.LocationId == locationId).ToList();
+            var availableCars = new List<Car>();
 
-            return cars;
+            foreach (var car in allCars)
+            {
+                var isCarReserved = _dbContext.RentalsDetails.Where(r => r.CarId == car.Id);
+                if (!isCarReserved.Any()) { availableCars.Add(car); }
+            }
+
+            return availableCars;
         }
 
         public Car GetCarById(int carId)

@@ -4,7 +4,7 @@ using RentingTesla.Services;
 
 namespace RentingTesla.Controllers
 {
-    [Route("api/{locationId}/car")]
+    [Route("api/locations/{locationId}/cars")]
     [ApiController]
     public class CarController : ControllerBase
     {

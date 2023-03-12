@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace RentingTesla.Controllers
 {
-    [Route("api/rental")]
+    [Route("api/reservations")]
     [ApiController]
     public class RentalController : ControllerBase
     {
