@@ -1,74 +1,135 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import TeslaHomePage from '../images/tesla-home-page.jpg';
-import Cars from './Cars';
+import axios from 'axios';
 
 import './components.css';
 
-export class Home extends Component {
-  static displayName = Home.name;
+export default function Home() {
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [pickupDate, setPickupDate] = useState('');
+  const [returnLocation, setReturnLocation] = useState('');
+  const [returnDate, setReturnDate] = useState('');
+  const [borrowerFirstName, setBorrowerFirstName] = useState('');
+  const [borrowerLastName, setBorrowerLastName] = useState('');
+  const [borrowerEmail, setBorrowerEmail] = useState('');
+  const [borrowerPhoneNumber, setBorrowerPhoneNumber] = useState('');
+  const [rentalCost, setRentalCost] = useState('');
 
-  render() {
-    return (
-      <div>
-        <div className='container mb-3'>
-          <div className='title-image'>
-            <img src={TeslaHomePage} alt='Tesla' style={{ width: '120%' }} />
-          </div>
-          <div className='container title-container'>
-            <h1 style={{ width: '30%' }}>RENT A TESLA IN MALLORCA</h1>
-          </div>
+  const [locations, setLocations] = useState([]);
+  const [carsInLocation, setCarsInLocation] = useState([]);
+
+  useEffect(() => {
+    try {
+      axios
+        .get('https://localhost:7024/api/location/get-all')
+        .then((response) => {
+          setLocations(response.data);
+          console.log(response.data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
+
+  const handlePickupLocationChange = async (e) => {
+    if (e.target.value !== '0') {
+      setPickupLocation(e.target.value);
+      try {
+        await axios
+          .get('https://localhost:7024/api/' + e.target.value + '/car/get-all')
+          .then((response) => {
+            setCarsInLocation(response.data);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const handleCarSelection = (car) => {};
+
+  const calculateRentalCost = () => {};
+
+  return (
+    <div>
+      <div className='container mb-3'>
+        <div className='title-image'>
+          <img src={TeslaHomePage} alt='Tesla' style={{ width: '127%' }} />
         </div>
-        <div className='container form-container'>
-          <form className='form'>
-            <div className='row'>
+        <div className='container title-container'>
+          <h1 style={{ width: '30%' }}>RENT A TESLA IN MALLORCA</h1>
+        </div>
+      </div>
+      <div className='container form-container'>
+        <form className='form' onSubmit={handleSubmit}>
+          <div className='container'>
+            <div className='reservation-data row'>
               <h3>Reservation data</h3>
               <div className='col'>
                 <div className='form-floating mb-2'>
                   <select
                     className='form-select'
                     aria-label='Default select example'
+                    onChange={(e) => handlePickupLocationChange(e)}
                   >
-                    <option selected>Open this select menu</option>
-                    <option value='1'>Palma Airport</option>
-                    <option value='2'>Palma City Center</option>
-                    <option value='3'>Alcudia</option>
-                    <option value='3'>Manacor</option>
+                    <option defaultValue='0'>Select pickup location</option>
+                    {locations.map((location) => (
+                      <option key={location.id} value={location.id}>
+                        {location.locationName}
+                      </option>
+                    ))}
                   </select>
                   <label>Pickup location</label>
                 </div>
-                <div className='form-floating mb-2'>
-                  <input className='form-control' type='date'></input>
+                <div className='form-floating'>
+                  <input className='form-control' type='datetime-local'></input>
                   <label>Pickup date</label>
                 </div>
-                <div className='form-floating mb-2'>
-                  <input className='form-control' type='time'></input>
-                  <label>Pickup time</label>
-                </div>
               </div>
-              <div className='col'>
+              <div className='col mb-3'>
                 <div className='form-floating mb-2'>
-                  <select
-                    className='form-select'
-                    aria-label='Default select example'
-                  >
-                    <option selected>Open this select menu</option>
-                    <option value='1'>Palma Airport</option>
-                    <option value='2'>Palma City Center</option>
-                    <option value='3'>Alcudia</option>
-                    <option value='3'>Manacor</option>
+                  <select className='form-select'>
+                    <option defaultValue='0'>Select return location</option>
+                    {locations.map((location) => (
+                      <option key={location.id} value={location.id}>
+                        {location.locationName}
+                      </option>
+                    ))}
                   </select>
                   <label>Return location</label>
                 </div>
-                <div className='form-floating mb-2'>
-                  <input className='form-control' type='date'></input>
+                <div className='form-floating'>
+                  <input className='form-control' type='datetime-local'></input>
                   <label>Return date</label>
                 </div>
-                <div className='form-floating mb-2'>
-                  <input className='form-control' type='time'></input>
-                  <label>Return time</label>
-                </div>
               </div>
-              <Cars />
+            </div>
+
+            {/* CARS */}
+
+            <div className='cars mb-3'>
+              <h3>Cars</h3>
+              <div className='form-floating mb-2'>
+                <select className='form-select'>
+                  <option value='0' selected disabled>
+                    Select car
+                  </option>
+                  {carsInLocation.map((car) => (
+                    <option key={car.id} value={car.id}>
+                      {car.model} | Seats: {car.seats} | Range: {car.range} km |
+                      Price: {car.pricePerDay} €/Day
+                    </option>
+                  ))}
+                </select>
+
+                <label>Available Cars</label>
+              </div>
+            </div>
+
+            <div className='personal-data mb-3'>
               <h3>Personal data</h3>
               <div className='row'>
                 <div className='col'>
@@ -80,6 +141,20 @@ export class Home extends Component {
                     ></input>
                     <label>First name</label>
                   </div>
+                </div>
+                <div className='col'>
+                  <div className='form-floating mb-2'>
+                    <input
+                      className='form-control'
+                      type='text'
+                      placeholder='Last name'
+                    ></input>
+                    <label>Last name</label>
+                  </div>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col'>
                   <div className='form-floating mb-2'>
                     <input
                       className='form-control'
@@ -94,27 +169,22 @@ export class Home extends Component {
                     <input
                       className='form-control'
                       type='text'
-                      placeholder='Last name'
-                    ></input>
-                    <label>Last name</label>
-                  </div>
-                  <div className='form-floating mb-2'>
-                    <input
-                      className='form-control'
-                      type='text'
                       placeholder='First name'
                     ></input>
                     <label>Phone number</label>
                   </div>
                 </div>
               </div>
-              <button className='btn btn-primary form-control mb-2'>
-                Submit
-              </button>
             </div>
-          </form>
-        </div>
+            <div className='total-cost mb-3'>
+              <h3>Total cost: {rentalCost}</h3>
+            </div>
+            <button className='btn btn-primary form-control mb-5'>
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }

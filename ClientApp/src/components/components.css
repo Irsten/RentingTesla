@@ -1,7 +1,5 @@
 .title-image {
   position: relative;
-  /* height: auto; */
-  /* width: 100%; */
   margin-left: calc(-50vw + 50%);
 }
 
@@ -11,12 +9,7 @@
   top: 8rem;
 }
 
-.form-container {
-  /* background-color: aqua; */
-}
-
 .form {
-  /* background-color: blue; */
   display: flex;
   align-items: center;
   align-content: center;
