@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RentingTesla.Entities;
 using RentingTesla.Models;
 
@@ -21,6 +22,8 @@ namespace RentingTesla.Services
         {
             var rentalPeriod = dto.ReturnDate.Day - dto.PickupDate.Day;
             var rentalCost = CalculateRentalCost(dto.CarId, rentalPeriod);
+            var pickupLocation = _dbContext.Locations.FirstOrDefault(l => l.Id == dto.PickupLocationId).LocationName;
+            var returnLocation = _dbContext.Locations.FirstOrDefault(l => l.Id == dto.ReturnLocationId).LocationName;
 
             _dbContext.RentalsDetails.Add(new RentalDetails
             {
@@ -28,9 +31,9 @@ namespace RentingTesla.Services
                 BorrowerLastName = dto.BorrowerLastName,
                 BorrowerEmail = dto.BorrowerEmail,
                 BorrowerPhoneNumber = dto.BorrowerPhoneNumber,
-                PickupLocation = dto.PickupLocation,
+                PickupLocation = pickupLocation,
                 PickupDate = dto.PickupDate,
-                ReturnLocation = dto.ReturnLocation,
+                ReturnLocation = returnLocation,
                 ReturnDate = dto.ReturnDate,
                 RentalCost = rentalCost,
                 CarId = dto.CarId,

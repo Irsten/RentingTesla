@@ -8,9 +8,9 @@ namespace RentingTesla.Models
         public string BorrowerLastName { get; set; }
         public string BorrowerEmail { get; set; }
         public string BorrowerPhoneNumber { get; set; }
-        public string PickupLocation { get; set; }
+        public int PickupLocationId { get; set; }
         public DateTime PickupDate { get; set; }
-        public string ReturnLocation { get; set; }
+        public int ReturnLocationId { get; set; }
         public DateTime ReturnDate { get; set; }
         public int CarId { get; set; }
     }

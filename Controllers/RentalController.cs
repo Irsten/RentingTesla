@@ -32,9 +32,9 @@ namespace RentingTesla.Controllers
             if (dto.BorrowerLastName == "") { return BadRequest("Your last name cannot be empty."); }
             if (dto.BorrowerEmail == "") { return BadRequest("Your email cannot be empty."); }
             if (dto.BorrowerPhoneNumber == "") { return BadRequest("Your phone number cannot be empty."); }
-            if (dto.PickupLocation == "") { return BadRequest("The pickup location cannot be empty."); }
+            if (dto.PickupLocationId == 0) { return BadRequest("The pickup location cannot be empty."); }
             if (dto.PickupDate == DateTime.MinValue) { return BadRequest("The pickup date cannot be empty."); }
-            if (dto.ReturnLocation == "") { return BadRequest("The return location cannot be empty."); }
+            if (dto.ReturnLocationId == 0) { return BadRequest("The return location cannot be empty."); }
             if (dto.ReturnDate == DateTime.MinValue) { return BadRequest("The return date cannot be empty."); }
             if (dto.CarId == 0) { return BadRequest("The car id cannot be 0."); }
 
@@ -43,9 +43,10 @@ namespace RentingTesla.Controllers
             if (!phoneNumberRegex.IsMatch(dto.BorrowerPhoneNumber)) { return BadRequest("Your phone number does not match phone number format."); }
 
             // check if the locations exists
-            var locations = _dbContext.Locations.Select(l => l.LocationName).ToList();
-            if (!locations.Contains(dto.PickupLocation)) { return BadRequest("The selected pickup location does not exist. Try to choose again."); }
-            if (!locations.Contains(dto.ReturnLocation)) { return BadRequest("The selected return location does not exist. Try to choose again."); }
+            var pickupLocation = _dbContext.Locations.Where(l => l.Id == dto.PickupLocationId);
+            if (!pickupLocation.Any()) { return BadRequest("The selected pickup location does not exist. Try to choose again."); }
+            var returnLocation = _dbContext.Locations.Where(l => l.Id == dto.ReturnLocationId);
+            if (!returnLocation.Any()) { return BadRequest("The selected return location does not exist. Try to choose again."); }
 
             // check if the dates are correct 
             var rentalPeriod = dto.ReturnDate.Day - dto.PickupDate.Day;
