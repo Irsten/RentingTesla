@@ -14,8 +14,8 @@ namespace RentingTesla.Controllers
         private readonly RentingTeslaDbContext _dbContext;
         private readonly IRentalService _rentalService;
 
-        private readonly Regex emailRegex = new Regex(@"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$");
-        private readonly Regex phoneNumberRegex = new Regex(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})$");
+        private readonly Regex emailRegex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        private readonly Regex phoneNumberRegex = new Regex(@"\(?\d{3}\)?-? *\d{3}-? *-?\d{3}");
         
 
         public RentalController(RentingTeslaDbContext dbContext, IRentalService rentalService)
