@@ -417,7 +417,7 @@ export default function Home() {
             <div className='personal-data mb-3'>
               <h3>Personal data</h3>
               <div className='row'>
-                <div className='col'>
+                <div className='col-md-6 col-lg-6'>
                   <div className='form-floating mb-2'>
                     <input
                       id='firstName'
@@ -438,7 +438,7 @@ export default function Home() {
                     <label>First name</label>
                   </div>
                 </div>
-                <div className='col'>
+                <div className='col-md-6 col-lg-6'>
                   <div className='form-floating mb-2'>
                     <input
                       id='lastName'
@@ -461,7 +461,7 @@ export default function Home() {
                 </div>
               </div>
               <div className='row'>
-                <div className='col'>
+                <div className='col-md-6 col-lg-6'>
                   <div className='form-floating mb-2'>
                     <input
                       id='email'
@@ -482,7 +482,7 @@ export default function Home() {
                     <label>Email</label>
                   </div>
                 </div>
-                <div className='col'>
+                <div className='col-md-6 col-lg-6'>
                   <div className='form-floating mb-2'>
                     <input
                       id='phoneNumber'
