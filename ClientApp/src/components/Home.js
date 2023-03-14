@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TeslaHomePage from '../images/tesla-home-page.jpg';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import './components.css';
 
@@ -36,6 +37,9 @@ export default function Home() {
   const [borrowerLastNameError, setBorrowerLastNameError] = useState('');
   const [borrowerEmailError, setBorrowerEmailError] = useState('');
   const [borrowerPhoneNumberError, setBorrowerPhoneNumberError] = useState('');
+
+  // useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     // get locations from database
@@ -264,24 +268,36 @@ export default function Home() {
     e.preventDefault();
 
     if (formValidation()) {
-      await axios
-        .post(url + 'reservations/make-reservation', {
-          borrowerFirstName,
-          borrowerLastName,
-          borrowerEmail,
-          borrowerPhoneNumber,
-          pickupLocationId,
-          pickupDate,
-          returnLocationId,
-          returnDate,
-          carId,
-        })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((err) => console.log(err));
-    } else {
-      console.log('general kenobi');
+      navigate('/details', {
+        state: {
+          pickupLocationId: pickupLocationId,
+          pickupDate: pickupDate,
+          returnLocationId: returnLocationId,
+          returnDate: returnDate,
+          carId: carId,
+          borrowerFirstName: borrowerFirstName,
+          borrowerLastName: borrowerLastName,
+          borrowerEmail: borrowerEmail,
+          borrowerPhoneNumber: borrowerPhoneNumber,
+        },
+      });
+      // await axios
+      //   .post(url + 'reservations/make-reservation', {
+      //     borrowerFirstName,
+      //     borrowerLastName,
+      //     borrowerEmail,
+      //     borrowerPhoneNumber,
+      //     pickupLocationId,
+      //     pickupDate,
+      //     returnLocationId,
+      //     returnDate,
+      //     carId,
+      //   })
+      //   .then((response) => {
+      //     console.log(response);
+      //     navigate('/details');
+      //   })
+      //   .catch((err) => console.log(err));
     }
   };
 

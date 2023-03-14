@@ -45,7 +45,13 @@ export class NavMenu extends Component {
             isOpen={!this.state.collapsed}
             navbar
           >
-            <ul className='navbar-nav flex-grow'></ul>
+            <ul className='navbar-nav flex-grow'>
+              <NavItem>
+                <NavLink tag={Link} to='/'>
+                  Home
+                </NavLink>
+              </NavItem>
+            </ul>
           </Collapse>
         </Navbar>
       </header>
