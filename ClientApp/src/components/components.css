@@ -32,3 +32,17 @@
 .car-price-per-day {
   text-align: center;
 }
+
+/* .print-btn {
+  background-color: aqua;
+}
+
+.total-cost {
+  background-color: rgb(252, 210, 22);
+} */
+
+.print-btn button {
+  margin-left: 25px;
+  font-size: 20px;
+  /* width: 100px; */
+}
