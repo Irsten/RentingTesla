@@ -4,7 +4,7 @@ namespace RentingTesla.Entities
 {
     public class RentingTeslaDbContext : DbContext
     {
-        private string _connectionString = "Server=RADEK;Database=RentingTeslaDb;Trusted_Connection=True";
+        private string _connectionString = "Server=DESKTOP-VU16TG5;Database=RentingTeslaDb;Trusted_Connection=True";
         public DbSet<Location> Locations { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<RentalDetails> RentalsDetails { get; set; }

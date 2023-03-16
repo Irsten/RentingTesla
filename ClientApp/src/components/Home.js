@@ -275,6 +275,7 @@ export default function Home() {
           returnLocationId: returnLocationId,
           returnDate: returnDate,
           carId: carId,
+          carPricePerDay: carsInLocation[carId].pricePerDay,
           borrowerFirstName: borrowerFirstName,
           borrowerLastName: borrowerLastName,
           borrowerEmail: borrowerEmail,
