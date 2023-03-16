@@ -2,6 +2,11 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import ModelS from '../images/tesla-model-s.jpg';
+import ModelX from '../images/tesla-model-x.jpg';
+import ModelY from '../images/tesla-model-y.png';
+import Model3 from '../images/tesla-model-3.png';
+
 const url = 'https://localhost:7024/api/';
 
 export default function Details() {
@@ -59,18 +64,39 @@ export default function Details() {
   const calculateTotalCost = () => {
     const diffTime = Math.abs(returnDate - pickupDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log(diffDays);
     setTotalCost(diffDays * location.state.carPricePerDay);
   };
 
-  const handleClick = () => {
-    console.log(totalCost);
+  const handleCarModel = () => {
+    switch (carDetails.model) {
+      case 'Model S':
+        return (
+          <img src={ModelS} alt='Tesla Model S' style={{ width: '100%' }} />
+        );
+      case 'Model X':
+        return (
+          <img src={ModelX} alt='Tesla Model X' style={{ width: '100%' }} />
+        );
+      case 'Model Y':
+        return (
+          <img src={ModelY} alt='Tesla Model Y' style={{ width: '100%' }} />
+        );
+      case 'Model 3':
+        return (
+          <img src={Model3} alt='Tesla Model 3' style={{ width: '100%' }} />
+        );
+
+      default:
+        break;
+    }
   };
 
   return (
     <div className='details container mt-5'>
       <h3 className='mb-4'>Reservation details</h3>
-      <div className='reservation-data-details row'>
-        <div className='col-sm-4'>
+      <div className='reservation-data-details row' style={{ maxWidth: 700 }}>
+        <div className='col'>
           <div className='pickup-location mb-2'>
             <h6>Pickup location</h6>
             {pickupLocationName}
@@ -80,7 +106,7 @@ export default function Details() {
             {pickupDate.toLocaleDateString()} {pickupDate.toLocaleTimeString()}
           </div>
         </div>
-        <div className='col-sm-4'>
+        <div className='col'>
           <div className='return-location mb-2'>
             <h6>Return location</h6>
             {returnLocationName}
@@ -91,39 +117,51 @@ export default function Details() {
           </div>
         </div>
       </div>
-      {/* TODO CAR */}
-      <div className='car-details'>
+      <div className='car-details row' style={{ maxWidth: 700 }}>
         <div className='col'>
           <div className='car mb-2'>
-            <h6>Car</h6>
-            {carDetails.model} {carDetails.pricePerDay} {carDetails.range}
-            {carDetails.seats}
-          </div>
-          <div className='total-cost mb-2'>
-            <h6>Total cost</h6>
-            {totalCost} €
+            <div className='car-model'>
+              <h3>{carDetails.model}</h3>
+            </div>
+            <div className='car-image'>{handleCarModel()}</div>
+            <div className='car-info row'>
+              <div className='car-seats col p-2'>
+                <i className='bi bi-people-fill'></i>
+                <p>{carDetails.seats}</p>
+              </div>
+              <div className='car-range col p-2'>
+                <i className='bi bi-battery-full'></i>
+                <p>{carDetails.range} KM</p>
+              </div>
+              <div className='car-price-per-day col p-2'>
+                <i className='bi bi-currency-euro'></i>
+                <p>{carDetails.pricePerDay} €/Day</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div className='personal-data-details'>
+      <div className='personal-data-details row' style={{ maxWidth: 700 }}>
         <div className='row'>
-          <div className='borrower-first-name col-sm-4 mb-2'>
+          <div className='borrower-first-name col mb-2'>
             <h6>First name</h6>Radomir
           </div>
-          <div className='borrower-last-name col-sm-4 mb-2'>
+          <div className='borrower-last-name col mb-2'>
             <h6>Last name</h6>Pankiewicz
           </div>
         </div>
         <div className='row'>
-          <div className='borrower-email col-sm-4 mb-2'>
+          <div className='borrower-email col mb-2'>
             <h6>Email</h6>radekp520@gmail.com
           </div>
-          <div className='borrower-phone-number col-sm-4 mb-2'>
+          <div className='borrower-phone-number col mb-2'>
             <h6>Phone number</h6>572232616
           </div>
         </div>
       </div>
-      {/* <button onClick={handleClick}>button</button> */}
+      <div className='total-cost mb-2'>
+        <p className='fs-3'>Total cost: {totalCost} €</p>
+      </div>
     </div>
   );
 }

@@ -256,7 +256,6 @@ export default function Home() {
       setBorrowerPhoneNumberError('');
     }
     if (errors === 0) {
-      //handleSubmit();
       return true;
     } else {
       return false;
@@ -268,37 +267,35 @@ export default function Home() {
     e.preventDefault();
 
     if (formValidation()) {
-      navigate('/details', {
-        state: {
-          pickupLocationId: pickupLocationId,
-          pickupDate: pickupDate,
-          returnLocationId: returnLocationId,
-          returnDate: returnDate,
-          carId: carId,
-          carPricePerDay: carsInLocation[carId].pricePerDay,
-          borrowerFirstName: borrowerFirstName,
-          borrowerLastName: borrowerLastName,
-          borrowerEmail: borrowerEmail,
-          borrowerPhoneNumber: borrowerPhoneNumber,
-        },
-      });
-      // await axios
-      //   .post(url + 'reservations/make-reservation', {
-      //     borrowerFirstName,
-      //     borrowerLastName,
-      //     borrowerEmail,
-      //     borrowerPhoneNumber,
-      //     pickupLocationId,
-      //     pickupDate,
-      //     returnLocationId,
-      //     returnDate,
-      //     carId,
-      //   })
-      //   .then((response) => {
-      //     console.log(response);
-      //     navigate('/details');
-      //   })
-      //   .catch((err) => console.log(err));
+      await axios
+        .post(url + 'reservations/make-reservation', {
+          borrowerFirstName,
+          borrowerLastName,
+          borrowerEmail,
+          borrowerPhoneNumber,
+          pickupLocationId,
+          pickupDate,
+          returnLocationId,
+          returnDate,
+          carId,
+        })
+        .then((response) => {
+          console.log(response);
+          navigate('/details', {
+            state: {
+              pickupLocationId: pickupLocationId,
+              pickupDate: pickupDate,
+              returnLocationId: returnLocationId,
+              returnDate: returnDate,
+              carId: carId,
+              carPricePerDay: carsInLocation[carId - 1].pricePerDay,
+              borrowerFirstName: borrowerFirstName,
+              borrowerLastName: borrowerLastName,
+              borrowerEmail: borrowerEmail,
+              borrowerPhoneNumber: borrowerPhoneNumber,
+            },
+          }).catch((err) => console.log(err));
+        });
     }
   };
 

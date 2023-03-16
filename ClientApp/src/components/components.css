@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css');
+
 .title-image {
   position: relative;
   margin-left: calc(-50vw + 50%);
@@ -16,4 +18,17 @@
   justify-content: center;
   justify-items: center;
   width: 100%;
+}
+
+.car-details i {
+  font-size: 30px;
+}
+.car-details p {
+  font-size: 18px;
+}
+.car-model,
+.car-seats,
+.car-range,
+.car-price-per-day {
+  text-align: center;
 }
