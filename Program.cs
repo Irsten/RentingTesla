@@ -1,6 +1,7 @@
 using RentingTesla;
 using RentingTesla.Entities;
 using RentingTesla.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddCors(options => options.AddPolicy("RentingTeslaApi",
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 

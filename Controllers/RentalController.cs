@@ -25,7 +25,7 @@ namespace RentingTesla.Controllers
         }
 
         [HttpPost("make-reservation")]
-        public ActionResult MakeReservation([FromBody] RentalDetailsDto dto)
+        public ActionResult MakeReservation([FromBody] RentalDetailsPostDto dto)
         {
             // check if the passed data are empty
             if (dto.BorrowerFirstName == "") { return BadRequest("Your first name cannot be empty."); }

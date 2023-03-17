@@ -2,7 +2,7 @@
 
 namespace RentingTesla.Models
 {
-    public class RentalDetailsDto
+    public class RentalDetailsPostDto
     {
         public string BorrowerFirstName { get; set; }
         public string BorrowerLastName { get; set; }

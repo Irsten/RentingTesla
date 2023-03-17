@@ -1,35 +1,41 @@
-﻿using RentingTesla.Entities;
+﻿using AutoMapper;
+using RentingTesla.Entities;
+using RentingTesla.Models;
 
 namespace RentingTesla.Services
 {
     public interface ILocationService
     {
-        List<Location> GetAll();
-        Location GetLocationById(int locationId);
+        List<LocationDto> GetAll();
+        LocationDto GetLocationById(int locationId);
     }
 
     public class LocationService : ILocationService
     {
         private readonly RentingTeslaDbContext _dbContext;
-        public LocationService(RentingTeslaDbContext dbContext)
+        private readonly IMapper _mapper;
+        public LocationService(RentingTeslaDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public List<Location> GetAll()
+        public List<LocationDto> GetAll()
         {
             var locations = _dbContext.Locations.ToList();
             if (!locations.Any()) { return null; }
+            var result = _mapper.Map<List<LocationDto>>(locations);
 
-            return locations;
+            return result;
         }
 
-        public Location GetLocationById(int locationId)
+        public LocationDto GetLocationById(int locationId)
         {
             var location = _dbContext.Locations.FirstOrDefault(l => l.Id == locationId);
             if (location == null) { return null; }
+            var result = _mapper.Map<LocationDto>(location);
 
-            return location;
+            return result;
         }
     }
 }

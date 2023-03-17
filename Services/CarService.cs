@@ -1,21 +1,25 @@
-﻿using RentingTesla.Entities;
+﻿using AutoMapper;
+using RentingTesla.Entities;
+using RentingTesla.Models;
 
 namespace RentingTesla.Services
 {
     public interface ICarService
     {
-        List<Car> GetAll(int locationId);
-        Car GetCarById(int carId);
+        List<CarDto> GetAll(int locationId);
+        CarDto GetCarById(int carId);
     }
 
     public class CarService : ICarService
     {
         private readonly RentingTeslaDbContext _dbContext;
-        public CarService(RentingTeslaDbContext dbContext)
+        private readonly IMapper _mapper;
+        public CarService(RentingTeslaDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
-        public List<Car> GetAll(int locationId)
+        public List<CarDto> GetAll(int locationId)
         {
             var allCars = _dbContext.Cars.Where(c => c.LocationId == locationId).ToList();
             var availableCars = new List<Car>();
@@ -25,16 +29,18 @@ namespace RentingTesla.Services
                 var isCarReserved = _dbContext.RentalsDetails.Where(r => r.CarId == car.Id);
                 if (!isCarReserved.Any()) { availableCars.Add(car); }
             }
+            var result = _mapper.Map<List<CarDto>>(availableCars);
 
-            return availableCars;
+            return result;
         }
 
-        public Car GetCarById(int carId)
+        public CarDto GetCarById(int carId)
         {
             var car = _dbContext.Cars.FirstOrDefault(c => c.Id == carId);
             if (car == null) { return null; }
+            var result = _mapper.Map<CarDto>(car);
 
-            return car;
+            return result;
         }
     }
 }
