@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import TeslaHomePage from '../images/tesla-home-page.jpg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -280,19 +279,9 @@ export default function Home() {
           carId,
         })
         .then((response) => {
-          console.log(response);
           navigate('/details', {
             state: {
-              pickupLocationId: pickupLocationId,
-              pickupDate: pickupDate,
-              returnLocationId: returnLocationId,
-              returnDate: returnDate,
-              carId: carId,
-              carPricePerDay: carsInLocation[carId - 1].pricePerDay,
-              borrowerFirstName: borrowerFirstName,
-              borrowerLastName: borrowerLastName,
-              borrowerEmail: borrowerEmail,
-              borrowerPhoneNumber: borrowerPhoneNumber,
+              reservationId: response.data,
             },
           }).catch((err) => console.log(err));
         });
@@ -300,15 +289,8 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <div className='container mb-3'>
-        <div className='title-image'>
-          <img src={TeslaHomePage} alt='Tesla' style={{ width: '127%' }} />
-        </div>
-        <div className='container title-container'>
-          <h1 style={{ width: '30%' }}>RENT A TESLA IN MALLORCA</h1>
-        </div>
-      </div>
+    <div className='container mb-3'>
+      <h1 className='title mt-3 mb-3'>RENT A TESLA IN MALLORCA</h1>
       <div className='container form-container'>
         <form className='form' onSubmit={handleSubmit}>
           <div className='container'>

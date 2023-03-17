@@ -1,16 +1,5 @@
 @import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css');
 
-.title-image {
-  position: relative;
-  margin-left: calc(-50vw + 50%);
-}
-
-.title-container h1 {
-  position: absolute;
-  color: #ffffff;
-  top: 8rem;
-}
-
 .form {
   display: flex;
   align-items: center;
@@ -33,16 +22,7 @@
   text-align: center;
 }
 
-/* .print-btn {
-  background-color: aqua;
-}
-
-.total-cost {
-  background-color: rgb(252, 210, 22);
-} */
-
 .print-btn button {
   margin-left: 25px;
   font-size: 20px;
-  /* width: 100px; */
 }
