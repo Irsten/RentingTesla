@@ -16,12 +16,20 @@ namespace RentingTesla.Controllers
 
         private readonly Regex emailRegex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
         private readonly Regex phoneNumberRegex = new Regex(@"\(?\d{3}\)?-? *\d{3}-? *-?\d{3}");
-        
+
 
         public RentalController(RentingTeslaDbContext dbContext, IRentalService rentalService)
         {
             _dbContext = dbContext;
             _rentalService = rentalService;
+        }
+
+        [HttpGet("{reservationId}")]
+        public ActionResult MakeReservation([FromRoute] int reservationId)
+        {
+            var reservationDetails = _rentalService.GetReservation(reservationId);
+            if (reservationDetails == null) { return BadRequest("Something went wrong."); }
+            return Ok(reservationDetails);
         }
 
         [HttpPost("make-reservation")]
@@ -56,19 +64,19 @@ namespace RentingTesla.Controllers
             if (rentalPeriod < 1) { return BadRequest("You have to rent a car for at least 1 day."); }
 
             // check if the selected car exists
-            var car = _dbContext.Cars.FirstOrDefault(c => c.Id== dto.CarId);
+            var car = _dbContext.Cars.FirstOrDefault(c => c.Id == dto.CarId);
             if (car == null) { return BadRequest("The selected car does not exist."); }
 
             // check if the selected car is available
             var returnDates = _dbContext.RentalsDetails.Where(r => r.CarId == dto.CarId).Select(r => r.ReturnDate).ToList();
             foreach (var date in returnDates)
             {
-                if(dto.PickupDate < date) { return BadRequest("The selected car is not available now."); }
+                if (dto.PickupDate < date) { return BadRequest("The selected car is not available now."); }
             }
 
-            _rentalService.MakeReservation(dto);
+            var id = _rentalService.MakeReservation(dto);
 
-            return Ok("Success!");
+            return Ok(id);
         }
     }
 }
