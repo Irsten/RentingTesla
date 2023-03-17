@@ -37,6 +37,10 @@ export default function Home() {
   const [borrowerEmailError, setBorrowerEmailError] = useState('');
   const [borrowerPhoneNumberError, setBorrowerPhoneNumberError] = useState('');
 
+  // alrets
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
   // useNavigate
   const navigate = useNavigate();
 
@@ -47,7 +51,11 @@ export default function Home() {
       .then((response) => {
         setLocations(response.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setIsAlertVisible(true);
+        setAlertMessage(err.response.data);
+      });
   }, []);
 
   // get todays date
@@ -81,7 +89,11 @@ export default function Home() {
         .then((response) => {
           setCarsInLocation(response.data);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          setIsAlertVisible(true);
+          setAlertMessage(err.response.data);
+        });
     }
   };
 
@@ -266,6 +278,7 @@ export default function Home() {
     e.preventDefault();
 
     if (formValidation()) {
+      sessionStorage.setItem('showSuccesAlert', '');
       await axios
         .post(url + 'reservations/make-reservation', {
           borrowerFirstName,
@@ -283,230 +296,256 @@ export default function Home() {
             state: {
               reservationId: response.data,
             },
-          }).catch((err) => console.log(err));
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsAlertVisible(true);
+          setAlertMessage(err.response.data);
         });
     }
   };
 
   return (
-    <div className='container mb-3'>
-      <h1 className='title mt-3 mb-3'>RENT A TESLA IN MALLORCA</h1>
-      <div className='container form-container'>
-        <form className='form' onSubmit={handleSubmit}>
-          <div className='container'>
-            {/* RESERVATION DATA */}
-            <div className='reservation-data row'>
-              <h3>Reservation data</h3>
-              <div className='col'>
-                <div className='form-floating mb-2'>
-                  <select
-                    id='pickupLocationId'
-                    className={
-                      pickupLocationIdError === ''
-                        ? 'form-select'
-                        : 'form-select is-invalid'
-                    }
-                    onChange={(e) => handleFormChange(e)}
-                  >
-                    <option value={0}>Select pickup location</option>
-                    {locations.map((location) => (
-                      <option key={location.id} value={location.id}>
-                        {location.locationName}
-                      </option>
-                    ))}
-                  </select>
-                  {pickupLocationIdError && (
-                    <div className='invalid-feedback'>
-                      {pickupLocationIdError}
-                    </div>
-                  )}
-                  <label>Pickup location</label>
+    <>
+      {isAlertVisible && (
+        <div
+          className='alert alert-danger alert-dismissible fade show mt-2'
+          role='alert'
+        >
+          {alertMessage}
+          <button
+            type='button'
+            className='btn-close'
+            data-bs-dismiss='alert'
+            onClick={() => setIsAlertVisible(false)}
+          ></button>
+        </div>
+      )}
+      <div className='container mb-3'>
+        <h1 className='title mt-3 mb-3'>RENT A TESLA IN MALLORCA</h1>
+        <div className='container form-container'>
+          <form className='form' onSubmit={handleSubmit}>
+            <div className='container'>
+              {/* RESERVATION DATA */}
+              <div className='reservation-data row'>
+                <h3>Reservation data</h3>
+                <div className='col'>
+                  <div className='form-floating mb-2'>
+                    <select
+                      id='pickupLocationId'
+                      className={
+                        pickupLocationIdError === ''
+                          ? 'form-select'
+                          : 'form-select is-invalid'
+                      }
+                      onChange={(e) => handleFormChange(e)}
+                    >
+                      <option value={0}>Select pickup location</option>
+                      {locations.map((location) => (
+                        <option key={location.id} value={location.id}>
+                          {location.locationName}
+                        </option>
+                      ))}
+                    </select>
+                    {pickupLocationIdError && (
+                      <div className='invalid-feedback'>
+                        {pickupLocationIdError}
+                      </div>
+                    )}
+                    <label>Pickup location</label>
+                  </div>
+                  <div className='form-floating'>
+                    <input
+                      id='pickupDate'
+                      className={
+                        pickupDateError !== ''
+                          ? 'form-control is-invalid'
+                          : 'form-control'
+                      }
+                      min={getMinDate()}
+                      type='datetime-local'
+                      onChange={(e) => handleFormChange(e)}
+                    ></input>
+                    {pickupDateError && (
+                      <div className='invalid-feedback'>{pickupDateError}</div>
+                    )}
+                    <label>Pickup date</label>
+                  </div>
                 </div>
-                <div className='form-floating'>
-                  <input
-                    id='pickupDate'
-                    className={
-                      pickupDateError !== ''
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    min={getMinDate()}
-                    type='datetime-local'
-                    onChange={(e) => handleFormChange(e)}
-                  ></input>
-                  {pickupDateError && (
-                    <div className='invalid-feedback'>{pickupDateError}</div>
-                  )}
-                  <label>Pickup date</label>
+                <div className='col mb-3'>
+                  <div className='form-floating mb-2'>
+                    <select
+                      id='returnLocationId'
+                      className={
+                        returnLocationIdError !== ''
+                          ? 'form-select is-invalid'
+                          : 'form-select'
+                      }
+                      onChange={(e) => handleFormChange(e)}
+                    >
+                      <option value={0}>Select return location</option>
+                      {locations.map((location) => (
+                        <option key={location.id} value={location.id}>
+                          {location.locationName}
+                        </option>
+                      ))}
+                    </select>
+                    {returnLocationIdError && (
+                      <div className='invalid-feedback'>
+                        {returnLocationIdError}
+                      </div>
+                    )}
+                    <label>Return location</label>
+                  </div>
+                  <div className='form-floating'>
+                    <input
+                      id='returnDate'
+                      className={
+                        returnDateError !== ''
+                          ? 'form-control is-invalid'
+                          : 'form-control'
+                      }
+                      min={getMinDate()}
+                      type='datetime-local'
+                      onChange={(e) => handleFormChange(e)}
+                    ></input>
+                    {returnDateError && (
+                      <div className='invalid-feedback'>{returnDateError}</div>
+                    )}
+                    <label>Return date</label>
+                  </div>
                 </div>
               </div>
-              <div className='col mb-3'>
+              {/* CARS */}
+              <div className='cars mb-3'>
+                <h3>Cars</h3>
                 <div className='form-floating mb-2'>
                   <select
-                    id='returnLocationId'
+                    id='carId'
                     className={
-                      returnLocationIdError !== ''
+                      carIdError !== ''
                         ? 'form-select is-invalid'
                         : 'form-select'
                     }
                     onChange={(e) => handleFormChange(e)}
                   >
-                    <option value={0}>Select return location</option>
-                    {locations.map((location) => (
-                      <option key={location.id} value={location.id}>
-                        {location.locationName}
+                    <option value={0}>Select car</option>
+                    {carsInLocation.map((car) => (
+                      <option key={car.id} value={car.id}>
+                        {car.model} | Seats: {car.seats} | Range: {car.range} km
+                        | Price: {car.pricePerDay} €/Day
                       </option>
                     ))}
                   </select>
-                  {returnLocationIdError && (
-                    <div className='invalid-feedback'>
-                      {returnLocationIdError}
+                  {carIdError && (
+                    <div className='invalid-feedback'>{carIdError}</div>
+                  )}
+                  <label>Available Cars</label>
+                </div>
+              </div>
+              {/* PERSONAL DATA */}
+              <div className='personal-data mb-3'>
+                <h3>Personal data</h3>
+                <div className='row'>
+                  <div className='col-md-6 col-lg-6'>
+                    <div className='form-floating mb-2'>
+                      <input
+                        id='firstName'
+                        className={
+                          borrowerFirstNameError !== ''
+                            ? 'form-control is-invalid'
+                            : 'form-control'
+                        }
+                        type='text'
+                        placeholder='First name'
+                        onChange={(e) => handleFormChange(e)}
+                      ></input>
+                      {borrowerFirstNameError && (
+                        <div className='invalid-feedback'>
+                          {borrowerFirstNameError}
+                        </div>
+                      )}
+                      <label>First name</label>
                     </div>
-                  )}
-                  <label>Return location</label>
+                  </div>
+                  <div className='col-md-6 col-lg-6'>
+                    <div className='form-floating mb-2'>
+                      <input
+                        id='lastName'
+                        className={
+                          borrowerLastNameError !== ''
+                            ? 'form-control is-invalid'
+                            : 'form-control'
+                        }
+                        type='text'
+                        placeholder='Last name'
+                        onChange={(e) => handleFormChange(e)}
+                      ></input>
+                      {borrowerLastNameError && (
+                        <div className='invalid-feedback'>
+                          {borrowerLastNameError}
+                        </div>
+                      )}
+                      <label>Last name</label>
+                    </div>
+                  </div>
                 </div>
-                <div className='form-floating'>
-                  <input
-                    id='returnDate'
-                    className={
-                      returnDateError !== ''
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    min={getMinDate()}
-                    type='datetime-local'
-                    onChange={(e) => handleFormChange(e)}
-                  ></input>
-                  {returnDateError && (
-                    <div className='invalid-feedback'>{returnDateError}</div>
-                  )}
-                  <label>Return date</label>
+                <div className='row'>
+                  <div className='col-md-6 col-lg-6'>
+                    <div className='form-floating mb-2'>
+                      <input
+                        id='email'
+                        className={
+                          borrowerEmailError !== ''
+                            ? 'form-control is-invalid'
+                            : 'form-control'
+                        }
+                        type='text'
+                        placeholder='Email'
+                        onChange={(e) => handleFormChange(e)}
+                      ></input>
+                      {borrowerEmailError && (
+                        <div className='invalid-feedback'>
+                          {borrowerEmailError}
+                        </div>
+                      )}
+                      <label>Email</label>
+                    </div>
+                  </div>
+                  <div className='col-md-6 col-lg-6'>
+                    <div className='form-floating mb-2'>
+                      <input
+                        id='phoneNumber'
+                        className={
+                          borrowerPhoneNumberError !== ''
+                            ? 'form-control is-invalid'
+                            : 'form-control'
+                        }
+                        type='text'
+                        placeholder='Phone number'
+                        onChange={(e) => handleFormChange(e)}
+                      ></input>
+                      {borrowerPhoneNumberError && (
+                        <div className='invalid-feedback'>
+                          {borrowerPhoneNumberError}
+                        </div>
+                      )}
+                      <label>Phone number</label>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <button
+                className='btn btn-primary form-control mb-5'
+                type='submit'
+              >
+                Submit
+              </button>
             </div>
-            {/* CARS */}
-            <div className='cars mb-3'>
-              <h3>Cars</h3>
-              <div className='form-floating mb-2'>
-                <select
-                  id='carId'
-                  className={
-                    carIdError !== '' ? 'form-select is-invalid' : 'form-select'
-                  }
-                  onChange={(e) => handleFormChange(e)}
-                >
-                  <option value={0}>Select car</option>
-                  {carsInLocation.map((car) => (
-                    <option key={car.id} value={car.id}>
-                      {car.model} | Seats: {car.seats} | Range: {car.range} km |
-                      Price: {car.pricePerDay} €/Day
-                    </option>
-                  ))}
-                </select>
-                {carIdError && (
-                  <div className='invalid-feedback'>{carIdError}</div>
-                )}
-                <label>Available Cars</label>
-              </div>
-            </div>
-            {/* PERSONAL DATA */}
-            <div className='personal-data mb-3'>
-              <h3>Personal data</h3>
-              <div className='row'>
-                <div className='col-md-6 col-lg-6'>
-                  <div className='form-floating mb-2'>
-                    <input
-                      id='firstName'
-                      className={
-                        borrowerFirstNameError !== ''
-                          ? 'form-control is-invalid'
-                          : 'form-control'
-                      }
-                      type='text'
-                      placeholder='First name'
-                      onChange={(e) => handleFormChange(e)}
-                    ></input>
-                    {borrowerFirstNameError && (
-                      <div className='invalid-feedback'>
-                        {borrowerFirstNameError}
-                      </div>
-                    )}
-                    <label>First name</label>
-                  </div>
-                </div>
-                <div className='col-md-6 col-lg-6'>
-                  <div className='form-floating mb-2'>
-                    <input
-                      id='lastName'
-                      className={
-                        borrowerLastNameError !== ''
-                          ? 'form-control is-invalid'
-                          : 'form-control'
-                      }
-                      type='text'
-                      placeholder='Last name'
-                      onChange={(e) => handleFormChange(e)}
-                    ></input>
-                    {borrowerLastNameError && (
-                      <div className='invalid-feedback'>
-                        {borrowerLastNameError}
-                      </div>
-                    )}
-                    <label>Last name</label>
-                  </div>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-md-6 col-lg-6'>
-                  <div className='form-floating mb-2'>
-                    <input
-                      id='email'
-                      className={
-                        borrowerEmailError !== ''
-                          ? 'form-control is-invalid'
-                          : 'form-control'
-                      }
-                      type='text'
-                      placeholder='Email'
-                      onChange={(e) => handleFormChange(e)}
-                    ></input>
-                    {borrowerEmailError && (
-                      <div className='invalid-feedback'>
-                        {borrowerEmailError}
-                      </div>
-                    )}
-                    <label>Email</label>
-                  </div>
-                </div>
-                <div className='col-md-6 col-lg-6'>
-                  <div className='form-floating mb-2'>
-                    <input
-                      id='phoneNumber'
-                      className={
-                        borrowerPhoneNumberError !== ''
-                          ? 'form-control is-invalid'
-                          : 'form-control'
-                      }
-                      type='text'
-                      placeholder='Phone number'
-                      onChange={(e) => handleFormChange(e)}
-                    ></input>
-                    {borrowerPhoneNumberError && (
-                      <div className='invalid-feedback'>
-                        {borrowerPhoneNumberError}
-                      </div>
-                    )}
-                    <label>Phone number</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button className='btn btn-primary form-control mb-5' type='submit'>
-              Submit
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

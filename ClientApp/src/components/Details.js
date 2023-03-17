@@ -28,12 +28,27 @@ export default function Details() {
   const [borrowerPhoneNumber, setBorrowerPhoneNumber] = useState('');
   const [totalCost, setTotalCost] = useState(0);
 
+  // alerts
+  const [showSuccesAlert, setShowSuccesAlert] = useState(false);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
   const location = useLocation();
   const componentRef = useRef();
 
   useEffect(() => {
     getReservationDetails();
+    const showSuccesAlertOnFirstLoad =
+      sessionStorage.getItem('showSuccesAlert');
+    if (!showSuccesAlertOnFirstLoad) {
+      sessionStorage.setItem('showSuccesAlert', 'true');
+      setShowSuccesAlert(true);
+    }
   }, []);
+
+  const handleDismiss = () => {
+    setShowSuccesAlert(false);
+  };
 
   // get reservation details
   const getReservationDetails = async () => {
@@ -42,7 +57,11 @@ export default function Details() {
       .then((response) => {
         setData(response.data);
       })
-      .catch((error) => console.log(error));
+      .catch((err) => {
+        console.log(err);
+        setIsAlertVisible(true);
+        setAlertMessage(err.response.data);
+      });
   };
 
   // set data values
@@ -94,6 +113,33 @@ export default function Details() {
     <>
       {location.state.reservationId > 0 ? (
         <div className='container'>
+          {showSuccesAlert && (
+            <div
+              className='alert alert-success alert-dismissible fade show mt-3'
+              role='alert'
+            >
+              <strong>The reservation was made successfully!</strong>
+              <button
+                type='button'
+                className='btn-close'
+                data-bs-dismiss='alert'
+              ></button>
+            </div>
+          )}
+          {isAlertVisible && (
+            <div
+              className='alert alert-danger alert-dismissible fade show mt-2'
+              role='alert'
+            >
+              {alertMessage}
+              <button
+                type='button'
+                className='btn-close'
+                data-bs-dismiss='alert'
+                onClick={() => handleDismiss()}
+              ></button>
+            </div>
+          )}
           <div ref={componentRef} className='details container mt-4'>
             <h3 className='mb-4'>Reservation details</h3>
             <div
