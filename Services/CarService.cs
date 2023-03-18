@@ -24,11 +24,17 @@ namespace RentingTesla.Services
             var allCars = _dbContext.Cars.Where(c => c.LocationId == locationId).ToList();
             var availableCars = new List<Car>();
 
+            //check if the car is available now
             foreach (var car in allCars)
             {
-                var isCarReserved = _dbContext.RentalsDetails.Where(r => r.CarId == car.Id);
-                if (!isCarReserved.Any()) { availableCars.Add(car); }
+                var rentalDetails = _dbContext.RentalsDetails.FirstOrDefault(r => r.CarId == car.Id);
+                if (rentalDetails == null) { availableCars.Add(car); }
+                else if (rentalDetails != null)
+                {
+                    if (rentalDetails.ReturnDate < DateTime.Now) { availableCars.Add(car); }
+                }
             }
+
             var result = _mapper.Map<List<CarDto>>(availableCars);
 
             return result;
