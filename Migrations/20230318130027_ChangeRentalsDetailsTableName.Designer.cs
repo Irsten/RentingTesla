@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentingTesla.Entities;
 
@@ -11,9 +12,10 @@ using RentingTesla.Entities;
 namespace RentingTesla.Migrations
 {
     [DbContext(typeof(RentingTeslaDbContext))]
-    partial class RentingTeslaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230318130027_ChangeRentalsDetailsTableName")]
+    partial class ChangeRentalsDetailsTableName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

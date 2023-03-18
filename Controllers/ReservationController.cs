@@ -9,7 +9,7 @@ namespace RentingTesla.Controllers
 {
     [Route("api/reservations")]
     [ApiController]
-    public class RentalController : ControllerBase
+    public class ReservationController : ControllerBase
     {
         private readonly RentingTeslaDbContext _dbContext;
         private readonly IRentalService _rentalService;
@@ -18,7 +18,7 @@ namespace RentingTesla.Controllers
         private readonly Regex phoneNumberRegex = new Regex(@"\(?\d{3}\)?-? *\d{3}-? *-?\d{3}");
 
 
-        public RentalController(RentingTeslaDbContext dbContext, IRentalService rentalService)
+        public ReservationController(RentingTeslaDbContext dbContext, IRentalService rentalService)
         {
             _dbContext = dbContext;
             _rentalService = rentalService;
@@ -33,7 +33,7 @@ namespace RentingTesla.Controllers
         }
 
         [HttpPost("make-reservation")]
-        public ActionResult MakeReservation([FromBody] RentalDetailsPostDto dto)
+        public ActionResult MakeReservation([FromBody] ReservationDetailsPostDto dto)
         {
             // check if the passed data are empty
             if (dto.BorrowerFirstName == "") { return BadRequest("Your first name cannot be empty."); }
@@ -68,7 +68,7 @@ namespace RentingTesla.Controllers
             if (car == null) { return BadRequest("The selected car does not exist."); }
 
             // check if the selected car is available
-            var returnDates = _dbContext.RentalsDetails.Where(r => r.CarId == dto.CarId).Select(r => r.ReturnDate).ToList();
+            var returnDates = _dbContext.ReservationsDetails.Where(r => r.CarId == dto.CarId).Select(r => r.ReturnDate).ToList();
             foreach (var date in returnDates)
             {
                 if (dto.PickupDate < date) { return BadRequest("The selected car is not available now."); }

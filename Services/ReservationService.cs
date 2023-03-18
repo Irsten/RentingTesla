@@ -8,37 +8,37 @@ namespace RentingTesla.Services
 {
     public interface IRentalService
     {
-        RentalDetailsGetDto GetReservation(int reservationId);
-        int MakeReservation(RentalDetailsPostDto dto);
+        ReservationDetailsGetDto GetReservation(int reservationId);
+        int MakeReservation(ReservationDetailsPostDto dto);
     }
 
-    public class RentalService : IRentalService
+    public class ReservationService : IRentalService
     {
         private readonly RentingTeslaDbContext _dbContext;
         private readonly IMapper _mapper;
-        public RentalService(RentingTeslaDbContext dbContext, IMapper mapper)
+        public ReservationService(RentingTeslaDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public RentalDetailsGetDto GetReservation(int reservationId)
+        public ReservationDetailsGetDto GetReservation(int reservationId)
         {
-            var reservation = _dbContext.RentalsDetails.Include(c => c.Car).FirstOrDefault(r => r.Id == reservationId);
+            var reservation = _dbContext.ReservationsDetails.Include(c => c.Car).FirstOrDefault(r => r.Id == reservationId);
             if (reservation == null) { return null; }
-            var result = _mapper.Map<RentalDetailsGetDto>(reservation);
+            var result = _mapper.Map<ReservationDetailsGetDto>(reservation);
 
             return result;
         }
 
-        public int MakeReservation(RentalDetailsPostDto dto)
+        public int MakeReservation(ReservationDetailsPostDto dto)
         {
             var rentalPeriod = dto.ReturnDate.Day - dto.PickupDate.Day;
             var rentalCost = CalculateRentalCost(dto.CarId, rentalPeriod);
             var pickupLocation = _dbContext.Locations.FirstOrDefault(l => l.Id == dto.PickupLocationId).LocationName;
             var returnLocation = _dbContext.Locations.FirstOrDefault(l => l.Id == dto.ReturnLocationId).LocationName;
 
-            var reservation = new RentalDetails
+            var reservation = new ReservationDetails
             {
                 BorrowerFirstName = dto.BorrowerFirstName,
                 BorrowerLastName = dto.BorrowerLastName,
@@ -52,7 +52,7 @@ namespace RentingTesla.Services
                 CarId = dto.CarId,
             };
 
-            _dbContext.RentalsDetails.Add(reservation);
+            _dbContext.ReservationsDetails.Add(reservation);
             var car = _dbContext.Cars.FirstOrDefault(c => c.Id == dto.CarId);
             car.LocationId = dto.ReturnLocationId;
             _dbContext.SaveChanges();

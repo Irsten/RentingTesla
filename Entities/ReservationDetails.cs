@@ -1,7 +1,8 @@
-﻿namespace RentingTesla.Models
+﻿namespace RentingTesla.Entities
 {
-    public class RentalDetailsGetDto
+    public class ReservationDetails
     {
+        public int Id { get; set; }
         public string BorrowerFirstName { get; set; }
         public string BorrowerLastName { get; set; }
         public string BorrowerEmail { get; set; }
@@ -10,7 +11,8 @@
         public DateTime PickupDate { get; set; }
         public string ReturnLocation { get; set; }
         public DateTime ReturnDate { get; set; }
-        public CarDto Car { get; set; }
         public int RentalCost { get; set; }
+        public int CarId { get; set; }
+        public virtual Car Car { get; set; }
     }
 }

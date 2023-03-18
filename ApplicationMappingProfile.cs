@@ -10,8 +10,8 @@ namespace RentingTesla
         {
             CreateMap<Car, CarDto>();
             CreateMap<Location, LocationDto>();
-            CreateMap<RentalDetails, RentalDetailsPostDto>();
-            CreateMap<RentalDetails, RentalDetailsGetDto>()
+            CreateMap<ReservationDetails, ReservationDetailsPostDto>();
+            CreateMap<ReservationDetails, ReservationDetailsGetDto>()
                 .ForMember(m => m.Car, c => c.MapFrom(s => s.Car));
         }
     }

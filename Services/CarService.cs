@@ -27,7 +27,7 @@ namespace RentingTesla.Services
             //check if the car is available now
             foreach (var car in allCars)
             {
-                var rentalDetails = _dbContext.RentalsDetails.FirstOrDefault(r => r.CarId == car.Id);
+                var rentalDetails = _dbContext.ReservationsDetails.FirstOrDefault(r => r.CarId == car.Id);
                 if (rentalDetails == null) { availableCars.Add(car); }
                 else if (rentalDetails != null)
                 {
