@@ -18,6 +18,8 @@ If you are using Visual Studio Code you you must open a terminal and write the c
 
 ## How the application works
 
+There are 3 tables in the database: **Locations**, **Cars** and **ReservationsDetails**. The user can only add new reservations but cannot enter data into the first two tables.
+
 There are 4 locations available (Palma Airport, Palma City Center, Alcudia and Manacor), and each location has 8 cars available for rent (2 of each model: S, 3, X, Y). Each car includes information on how many seats it has, its range when fully charged and its daily rental cost. A car can be rented and returned at any of the available locations.
 
 To make a reservation, the user must fill out a form in which he selects the location where he will pick up and return the car and the time for which he wants to rent the car, as well as provide his personal information (name, surname, email, phone number). After successfully making a reservation, a new reservation record is created in the database and the user is redirected to a page with all the details about his reservation and can print them to a pdf file.
