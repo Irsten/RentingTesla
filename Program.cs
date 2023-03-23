@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RentingTesla;
 using RentingTesla.Entities;
 using RentingTesla.Services;
@@ -8,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<RentingTeslaDbContext>();
+builder.Services.AddDbContext<RentingTeslaDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 builder.Services.AddScoped<RentingTeslaSeeder>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddPolicy("RentingTeslaApi",
