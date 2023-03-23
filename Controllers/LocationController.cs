@@ -15,17 +15,17 @@ namespace RentingTesla.Controllers
         }
 
         [HttpGet("get-all")]
-        public ActionResult GetAll()
+        public async Task<ActionResult> GetAll()
         {
-            var locations = _locationService.GetAll();
-            if (!locations.Any()) { return BadRequest("There are no locations."); }
+            var locations = await _locationService.GetAll();
+            if (locations == null) { return BadRequest("There are no locations."); }
 
             return Ok(locations);
         }
         [HttpGet("{locationId}")]
-        public ActionResult GetLocationById([FromRoute] int locationId)
+        public async Task<ActionResult> GetLocationById([FromRoute] int locationId)
         {
-            var location = _locationService.GetLocationById(locationId);
+            var location = await _locationService.GetLocationById(locationId);
             if (location == null) { return BadRequest("Selected location does not exist."); }
 
             return Ok(location);

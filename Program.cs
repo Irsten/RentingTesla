@@ -24,7 +24,7 @@ builder.Services.AddCors(options => options.AddPolicy("RentingTeslaApi",
 
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<IRentalService, ReservationService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();

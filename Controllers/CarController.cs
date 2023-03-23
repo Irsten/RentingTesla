@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RentingTesla.Entities;
 using RentingTesla.Services;
 
@@ -17,21 +18,21 @@ namespace RentingTesla.Controllers
         }
 
         [HttpGet("get-all")]
-        public ActionResult GetAllCarsInLocation([FromRoute] int locationId)
+        public async Task<ActionResult> GetAllCarsInLocation([FromRoute] int locationId)
         {
-            var locations = _dbContext.Locations.Where(l => l.Id == locationId);
-            if (!locations.Any()) { return BadRequest("The selected location does not exists."); }
-            var cars = _carService.GetAll(locationId);
+            var locations = await _dbContext.Locations.FirstOrDefaultAsync(l => l.Id == locationId);
+            if (locations == null) { return BadRequest("The selected location does not exists."); }
+            var cars = await _carService.GetAll(locationId);
 
             return Ok(cars);
         }
 
         [HttpGet("{carId}")]
-        public ActionResult GetCarById([FromRoute] int locationId, [FromRoute] int carId) 
+        public async Task<ActionResult> GetCarById([FromRoute] int locationId, [FromRoute] int carId) 
         {
-            var locations = _dbContext.Locations.Where(l => l.Id == locationId);
-            if (!locations.Any()) { return BadRequest("The selected location does not exists."); }
-            var car = _carService.GetCarById(carId);
+            var locations = await _dbContext.Locations.FirstOrDefaultAsync(l => l.Id == locationId);
+            if (locations == null) { return BadRequest("The selected location does not exists."); }
+            var car = await _carService.GetCarById(carId);
 
             return Ok(car);
         }

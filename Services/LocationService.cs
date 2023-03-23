@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RentingTesla.Entities;
 using RentingTesla.Models;
 
@@ -6,8 +7,8 @@ namespace RentingTesla.Services
 {
     public interface ILocationService
     {
-        List<LocationDto> GetAll();
-        LocationDto GetLocationById(int locationId);
+        Task<List<LocationDto>> GetAll();
+        Task<LocationDto> GetLocationById(int locationId);
     }
 
     public class LocationService : ILocationService
@@ -20,18 +21,18 @@ namespace RentingTesla.Services
             _mapper = mapper;
         }
 
-        public List<LocationDto> GetAll()
+        public async Task<List<LocationDto>> GetAll()
         {
-            var locations = _dbContext.Locations.ToList();
+            var locations = await _dbContext.Locations.ToListAsync();
             if (!locations.Any()) { return null; }
             var result = _mapper.Map<List<LocationDto>>(locations);
 
             return result;
         }
 
-        public LocationDto GetLocationById(int locationId)
+        public async Task<LocationDto> GetLocationById(int locationId)
         {
-            var location = _dbContext.Locations.FirstOrDefault(l => l.Id == locationId);
+            var location = await _dbContext.Locations.FirstOrDefaultAsync(l => l.Id == locationId);
             if (location == null) { return null; }
             var result = _mapper.Map<LocationDto>(location);
 

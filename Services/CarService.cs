@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RentingTesla.Entities;
 using RentingTesla.Models;
 
@@ -6,8 +7,8 @@ namespace RentingTesla.Services
 {
     public interface ICarService
     {
-        List<CarDto> GetAll(int locationId);
-        CarDto GetCarById(int carId);
+        Task<List<CarDto>> GetAll(int locationId);
+        Task<CarDto> GetCarById(int carId);
     }
 
     public class CarService : ICarService
@@ -19,15 +20,16 @@ namespace RentingTesla.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public List<CarDto> GetAll(int locationId)
+
+        public async Task<List<CarDto>> GetAll(int locationId)
         {
-            var allCars = _dbContext.Cars.Where(c => c.LocationId == locationId).ToList();
+            var allCars = await _dbContext.Cars.Where(c => c.LocationId == locationId).ToListAsync();
             var availableCars = new List<Car>();
 
             //check if the car is available now
             foreach (var car in allCars)
             {
-                var rentalDetails = _dbContext.ReservationsDetails.FirstOrDefault(r => r.CarId == car.Id);
+                var rentalDetails = await _dbContext.ReservationsDetails.FirstOrDefaultAsync(r => r.CarId == car.Id);
                 if (rentalDetails == null) { availableCars.Add(car); }
                 else if (rentalDetails != null)
                 {
@@ -40,9 +42,9 @@ namespace RentingTesla.Services
             return result;
         }
 
-        public CarDto GetCarById(int carId)
+        public async Task<CarDto> GetCarById(int carId)
         {
-            var car = _dbContext.Cars.FirstOrDefault(c => c.Id == carId);
+            var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.Id == carId);
             if (car == null) { return null; }
             var result = _mapper.Map<CarDto>(car);
 

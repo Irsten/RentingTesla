@@ -5,9 +5,6 @@ namespace RentingTesla.Entities
 {
     public class RentingTeslaDbContext : DbContext
     {
-        //private string _connectionString = "Server=DESKTOP-VU16TG5;Database=RentingTeslaDb;Trusted_Connection=True";
-        //string options = configuration.GetConnectionString("DefaultConnection");
-
         private readonly IConfiguration _configuration;
 
         public RentingTeslaDbContext(IConfiguration configuration)
